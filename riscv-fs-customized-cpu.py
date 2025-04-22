@@ -96,3 +96,32 @@ print("Beginning simulation!")
 # Compiler: SiFive internal clang (close to upstream clang 18).
 # Benchmark: SPEC 2006CPU v1.2 (not optimized version)
 simulator.run()
+
+# 添加代码来记录SPEC CPU2006测试期间的metrics
+# 假设board.get_stats()返回包含所有计数的字典，实际API请根据实际情况调整
+stats = board.get_stats()  # 获取统计数据
+
+cycles = stats.get("cycles", 1)
+pipeline_width = 3
+
+decoded = stats.get("decoded_less_than_maximum_operations", 0)
+bdir_mispred = stats.get("branch_direction_misprediction", 0)
+ijtp_mispred = stats.get("ijtp_misprediction", 0)
+ras_mispred = stats.get("ras_mispredicted_target", 0)
+decode_stall = stats.get("instruction_decode_stall_from_rhf_recover", 0)
+instructions = stats.get("Instructions", 0)
+
+PARTIAL_SLOT_FACTOR = 2
+FETCH_WAIT_CYCLE = 2
+BPM_COST = 9
+
+frontend_bound = (decoded * PARTIAL_SLOT_FACTOR + (bdir_mispred + ijtp_mispred + ras_mispred) * FETCH_WAIT_CYCLE * pipeline_width) / (cycles * pipeline_width)
+bad_speculation = (((bdir_mispred + ijtp_mispred + ras_mispred) * BPM_COST * pipeline_width + decode_stall * pipeline_width)) / (cycles * pipeline_width)
+retiring = instructions / (cycles * pipeline_width)
+backend_bound = 1 - (frontend_bound + bad_speculation + retiring)
+
+print("Metrics:")
+print("Frontend Bound:", frontend_bound)
+print("Bad Speculation:", bad_speculation)
+print("Retiring:", retiring)
+print("Backend Bound:", backend_bound)
