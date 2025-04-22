@@ -5,7 +5,7 @@
 #           L3 Cache 2MB 
 #           Memory 2GB 
 #           Kernel Linux 6.7.9 
-#           Benchmark SPEC 2006CPU v1.2 (not optimized version) 
+#           Benchmark SPEC 2006CPU v1.0.2 (not optimized version) 
 #           Compiler SiFive internal clang (close to upstream clang 18)
 
 # Copyright (c) 2021 The Regents of the University of California
@@ -119,9 +119,11 @@ frontend_bound = (decoded * PARTIAL_SLOT_FACTOR + (bdir_mispred + ijtp_mispred +
 bad_speculation = (((bdir_mispred + ijtp_mispred + ras_mispred) * BPM_COST * pipeline_width + decode_stall * pipeline_width)) / (cycles * pipeline_width)
 retiring = instructions / (cycles * pipeline_width)
 backend_bound = 1 - (frontend_bound + bad_speculation + retiring)
+ipc = instructions / cycles
 
 print("Metrics:")
 print("Frontend Bound:", frontend_bound)
 print("Bad Speculation:", bad_speculation)
 print("Retiring:", retiring)
 print("Backend Bound:", backend_bound)
+print("IPC", ipc)
