@@ -2,7 +2,9 @@
 Top-Down Microarchitecture Analysis on Customized Out-of-Order RISC-V CPU with SPEC CPU 2006
 
 the SPEC CPU 2006 version: 1.0.1
+
 working environment: Ubuntu24.04 (WSL2.4.12 on windows11) 
+
 gem5 version: 24.1.0.2 
 
 **Metrics**
@@ -22,3 +24,13 @@ gem5 version: 24.1.0.2
 | PARTIAL_SLOT_FACTOR | Multiply cycles by this number for partial decode to represent partial slots. | 2     |
 | FETCH_WAIT_CYCLE    | The number of cycles that the instruction queue waits for fetch after a flush. | 2     |
 | PIPELINE_WIDTH      | The maximum number of instructions that the CPU can deliver to the Backend    | 3     |
+
+## Run Instructions
+
+1. Run the risv-fs-customized-cpu.py script.
+2. In the fs simulation, install clang 18 and the SPEC CPU2006 suite.
+3. Run: gem5.opt riscv-fs-customized-cpu.py --script [script.sh]
+
+
+## TODO
+- [ ] fixing the warning "Address .... is outside os physical memory, stopping fetch"
