@@ -55,18 +55,39 @@ sudo ln -s /usr/bin/riscv64-linux-gnu-ar /usr/bin/riscv64-unknown-linux-gnu-ar
 
 ### Clang 18 is cross compilated on the host computer
 
-To speed up the process, I compiled Clang 18 on the host computer with:
+To speed up the process, I compiled Clang 18 on the host computer with two steps:
+
 ```bash
+mkdir build-host
+cd build-host
 cmake -G Ninja ../llvm \
-  -DLLVM_TARGETS_TO_BUILD="RISCV" \
-  -DLLVM_DEFAULT_TARGET_TRIPLE=riscv64-unknown-linux-gnu \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_PROJECTS="clang;lld" \
+  -DLLVM_TARGETS_TO_BUILD="X86;RISCV"
+```
+
+
+```bash
+mkdir build-riscv
+cd build-riscv
+cmake -G Ninja ../llvm \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_SYSTEM_NAME=Linux \
+  -DCMAKE_SYSTEM_PROCESSOR=riscv64 \
   -DCMAKE_C_COMPILER=riscv64-linux-gnu-gcc \
   -DCMAKE_CXX_COMPILER=riscv64-linux-gnu-g++ \
-  -DCMAKE_SYSROOT=/usr/riscv64-linux-gnu \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DLLVM_ENABLE_PROJECTS="clang" \
-  -DLLVM_ENABLE_TERMINFO=OFF \
-  -DLLVM_ENABLE_ZLIB=OFF \
-  -DLLVM_ENABLE_LIBXML2=OFF \
-  -DLLVM_ENABLE_ASSERTIONS=OFF
+  -DLLVM_TARGETS_TO_BUILD="RISCV" \
+  -DLLVM_ENABLE_PROJECTS="clang;lld" \
+  -DLLVM_TABLEGEN_EXE=../build-host/bin/llvm-tblgen
+  -DCLANG_TABLEGEN_EXE=../build-host/bin/clang-tblgen \
+  -DLLVM_NATIVE_TOOL_DIR=../build-host/bin \
+  -DLLVM_USE_HOST_TOOLS=ON \
+  -DLLVM_BUILD_UTILS=OFF \
+  -DLLVM_INCLUDE_UTILS=OFF \
+  -DLLVM_BUILD_TOOLS=OFF \
+  -DLLVM_INCLUDE_TOOLS=OFF \
+  -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF \
+  -DLLVM_INCLUDE_DOCS=OFF
+ninja
 ```
