@@ -20,6 +20,8 @@ from gem5.utils.requires import requires
 from gem5.components.cachehierarchies.abstract_three_level_cache_hierarchy import AbstractThreeLevelCacheHierarchy
 from gem5.components.cachehierarchies.classic.no_cache import NoCache
 
+import os
+
 # Run a check to ensure the right version of gem5 is being used.
 requires(isa_required=ISA.RISCV)
 
@@ -42,7 +44,9 @@ board = RiscvBoard(
 
 # Set the Full System workload with Linux 6.7.9 kernel.
 board.set_kernel_disk_workload(
-    kernel=obtain_resource("riscv-bootloader-vmlinux-6.7.9", resource_version="1.0.0"),
+    # kernel=obtain_resource("riscv-bootloader-vmlinux-6.7.9", resource_version="1.0.0"),
+    # kernel=obtain_resource(os.path.dirname(__file__) + "/" + "bootloader-vmlinux-5.10", resource_version="1.0.0"),
+    kernel=obtain_resource("riscv-bootloader-vmlinux-5.10", resource_version="1.0.0"),
     disk_image=obtain_resource("riscv-disk-img", resource_version="1.0.0")
 )
 
