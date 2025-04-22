@@ -2,6 +2,8 @@
 Top-Down Microarchitecture Analysis on Customized Out-of-Order RISC-V CPU with SPEC CPU 2006
 
 the SPEC CPU 2006 version: 1.0.1
+working environment: Ubuntu24.04 (WSL2.4.12 on windows11) 
+gem5 version: 24.1.0.2 
 
 **Metrics**
 
