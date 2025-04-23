@@ -17,16 +17,33 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
 from gem5.utils.requires import requires
 
-from gem5.components.cachehierarchies.abstract_three_level_cache_hierarchy import AbstractThreeLevelCacheHierarchy
-from gem5.components.cachehierarchies.classic.no_cache import NoCache
+from gem5.components.cachehierarchies.classic.private_l1_private_l2_cache_hierarchy import PrivateL1PrivateL2CacheHierarchy
+from m5.objects import Cache, Port, SystemXBar
 
 import os
 
 # Run a check to ensure the right version of gem5 is being used.
 requires(isa_required=ISA.RISCV)
 
-# Use NoCache as a placeholder for the required parameter
-cache_hierarchy = NoCache()
+# Define our own L3Cache class
+class L3Cache(Cache):
+    def __init__(self, size):
+        super().__init__()
+        self.size = size
+        self.assoc = 16
+        self.tag_latency = 20
+        self.data_latency = 20
+        self.response_latency = 20
+        self.mshrs = 20
+        self.tgts_per_mshr = 12
+        self.writeback_clean = False
+
+# Use gem5's standard cache hierarchy with the correct parameter names
+cache_hierarchy = PrivateL1PrivateL2CacheHierarchy(
+    l1i_size="32KiB",
+    l1d_size="32KiB", 
+    l2_size="2MiB"
+)
 
 # Setup the system memory with 2GB capacity.
 memory = SingleChannelDDR3_1600(size="2GiB")
@@ -34,18 +51,17 @@ memory = SingleChannelDDR3_1600(size="2GiB")
 # Setup a single core Out-of-Order Processor.
 processor = SimpleProcessor(cpu_type=CPUTypes.O3, num_cores=1, isa=ISA.RISCV)
 
-# First create the board with processor, memory, and cache hierarchy
+# Create the board WITH the cache_hierarchy parameter
 board = RiscvBoard(
     clk_freq="32.5MHz",
     processor=processor,
     memory=memory,
-    cache_hierarchy=cache_hierarchy
+    cache_hierarchy=cache_hierarchy  # Add the cache_hierarchy parameter at initialization
 )
 
 # Set the Full System workload with Linux 6.7.9 kernel.
 board.set_kernel_disk_workload(
-    # kernel=obtain_resource("riscv-bootloader-vmlinux-6.7.9", resource_version="1.0.0"),
-    # kernel=obtain_resource(os.path.dirname(__file__) + "/" + "bootloader-vmlinux-5.10", resource_version="1.0.0"),
+    # maybe I should use the local path here to avoid putting the image in the cache folder
     kernel=obtain_resource("riscv-bootloader-vmlinux-5.10", resource_version="1.0.0"),
     disk_image=obtain_resource("riscv-disk-img", resource_version="1.0.0")
 )
