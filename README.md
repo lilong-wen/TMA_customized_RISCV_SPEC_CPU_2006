@@ -25,11 +25,6 @@ gem5 version: 24.1.0.2
 | FETCH_WAIT_CYCLE    | The number of cycles that the instruction queue waits for fetch after a flush. | 2     |
 | PIPELINE_WIDTH      | The maximum number of instructions that the CPU can deliver to the Backend    | 3     |
 
-## Run Instructions
-
-1. Run the risv-fs-customized-cpu.py script.
-2. In the fs simulation, install clang 18 and the SPEC CPU2006 suite.
-3. Run: gem5.opt riscv-fs-customized-cpu.py --script [script.sh]
 
 ## TODO
 - [ ] Fix the warning "Address .... is outside os physical memory, stopping fetch"
@@ -55,7 +50,7 @@ sudo ln -s /usr/bin/riscv64-linux-gnu-ar /usr/bin/riscv64-unknown-linux-gnu-ar
 
 ### Clang 18 is cross compilated on the host computer
 
-To speed up the process, I compiled Clang 18 on the host computer with two steps:
+To speed up the process, I compiled Clang 18 on the host computer in two steps, instead of compiling it on the target machine:z
 
 ```bash
 mkdir build-host
