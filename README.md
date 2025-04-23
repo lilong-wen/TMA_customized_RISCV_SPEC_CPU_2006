@@ -31,7 +31,7 @@ gem5 version: 24.1.0.2
 
 ## NOTICE
 
-### riscv64-unknown-linux-gnu-g++/gcc/ar not found
+### 1.  riscv64-unknown-linux-gnu-g++/gcc/ar not found
 
 When compiling m5, I keep encountering the following erros:
 
@@ -48,9 +48,9 @@ sudo ln -s /usr/bin/riscv64-linux-gnu-gcc /usr/bin/riscv64-unknown-linux-gnu-gcc
 sudo ln -s /usr/bin/riscv64-linux-gnu-ar /usr/bin/riscv64-unknown-linux-gnu-ar
 ```
 
-### Clang 18 is cross compilated on the host computer
+### 2. Clang 18 is cross compilated on the host computer
 
-To speed up the process, I compiled Clang 18 on the host computer in two steps, instead of compiling it on the target machine:z
+To speed up the process, I compiled Clang 18 on the host machine in two steps, instead of directly compiling it on the target machine. Howerver, the cross-compilation process still costs me around 3 hours somehow (12th Intel(R) i9-12900H with 32GB memory).:
 
 ```bash
 mkdir build-host
@@ -86,3 +86,30 @@ cmake -G Ninja ../llvm \
   -DLLVM_INCLUDE_DOCS=OFF
 ninja
 ```
+
+Then, mount the disk image using
+```bash
+sudo mount -o loop ~/.cache/gem5/riscv-disk-img /mnt/rootfs
+```
+and copy the compiled files to the target machine:
+```bash
+sudo cp -r build-riscv/bin/* /mnt/rootfs/usr/bin/
+sudo cp -r build-riscv/lib/* /mnt/rootfs/usr/lib/
+sudo cp -r build-riscv/include/* /mnt/rootfs/usr/include/
+sudo cp -r build-riscv/share/* /mnt/rootfs/usr/share/
+```
+Before the copy process, I enlarge the disk to make sure that the target machine has enough space. 
+```bash
+sudo e2fsck -f ~/.cache/gem5/riscv-disk-img
+dd if=/dev/zero bs=1M count=1024 >> ~/.cache/gem5/riscv-disk-img
+resize2fs ~/.cache/gem5/riscv-disk-img  
+``` 
+### 3. Three-level cache problem
+
+I tried to implement a three-level cache system with classic caches in Gem5 with 'riscv-fs-customized-cpu.py' and 'cache_helper.py', but I keep encountering the following error:
+```bash
+RuntimeError: Attempt to instantiate orphan node <orphan Cache>
+```
+I have no idea how to fix it and don't know if it's possible to implement a three-level cache system under classic caches system. Maybe I will solve this later.
+
+For now, I wrote another script 'riscv-fs-customized-cpu-ruby.py' to implement a three-level cache system with ruby caches. 
