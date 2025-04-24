@@ -261,7 +261,7 @@ decoded = stats.get("decoded_less_than_maximum_operations", 0)
 bdir_mispred = stats.get("branch_direction_misprediction", 0)
 ijtp_mispred = stats.get("ijtp_misprediction", 0)
 ras_mispred = stats.get("ras_mispredicted_target", 0)
-decode_stall = stats.get("instruction_decode_stall_from_rhf_recover", 0)
+decode_stall = stats.get("instruction_decode_stall_from_recover", 0)
 instructions = stats.get("Instructions", 0)
 
 PARTIAL_SLOT_FACTOR = 2
