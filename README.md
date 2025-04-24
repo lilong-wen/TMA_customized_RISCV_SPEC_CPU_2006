@@ -117,3 +117,7 @@ For now, I wrote another script 'riscv-fs-customized-cpu-ruby.py' to implement a
 ### 4. The SPEC benchmark experiments script
 
 The SPEC benchmark experiments script is based on the gem5 example code 'configs/example/gem5_library/x86-spec-cpu2006-benchmarks.py' with slight modifications from x86 to customized riscv cpu.
+
+### 5. The customized counters
+
+counter 'instruction_decode_stall_from_rhf_recover' seems to be not existed, I changed it to 'instruction_decode_stall_from_recover', I will fix it later.
