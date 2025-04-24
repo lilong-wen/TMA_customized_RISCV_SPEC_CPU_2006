@@ -113,3 +113,7 @@ RuntimeError: Attempt to instantiate orphan node <orphan Cache>
 I have no idea how to fix it and don't know if it's possible to implement a three-level cache system under classic caches system. Maybe I will solve this later.
 
 For now, I wrote another script 'riscv-fs-customized-cpu-ruby.py' to implement a three-level cache system with ruby caches. 
+
+### 4. The SPEC benchmark experiments script
+
+The SPEC benchmark experiments script is based on the gem5 example code 'configs/example/gem5_library/x86-spec-cpu2006-benchmarks.py' with slight modifications from x86 to customized riscv cpu.
