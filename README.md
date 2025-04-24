@@ -110,7 +110,7 @@ I tried to implement a three-level cache system with classic caches in Gem5 with
 ```bash
 RuntimeError: Attempt to instantiate orphan node <orphan Cache>
 ```
-I have no idea how to fix it and don't know if it's possible to implement a three-level cache system under classic caches system. Maybe I will solve this later.
+I have no idea how to fix it by now. Maybe I will solve this later.
 
 For now, I wrote another script 'riscv-fs-customized-cpu-ruby.py' to implement a three-level cache system with ruby caches. 
 
